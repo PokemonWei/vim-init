@@ -1,15 +1,16 @@
 #! /bin/sh
 
-git clone https://github.com/universal-ctags/ctags.git
+wget http://tamacom.com/global/global-6.6.4.tar.gz
 
-cd ctags
-
-./autogen.sh
+cd global-6.6.4 
 
 make distclean
 
-echo "Ctags Install Path: $1"
+echo "Gtags Install Path: $1"
+
 ./configure --prefix=$1 # defaults to /usr/local
+
 make
+
 make install # may require extra privileges depending on where to install
 

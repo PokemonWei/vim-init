@@ -123,7 +123,7 @@ if index(g:bundle_group, 'basic') >= 0
 	nmap <m-e> <Plug>(choosewin)
 
 	" 默认不显示 startify
-	let g:startify_disable_at_vimenter = 1
+	let g:startify_disable_at_vimenter = 0 
 	let g:startify_session_dir = '~/.vim/session'
 
 	" 使用 <space>ha 清除 errormarker 标注的错误
@@ -217,7 +217,7 @@ if index(g:bundle_group, 'tags') >= 0
 	let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 
 	" 使用 universal-ctags 的话需要下面这行，请反注释
-	" let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+	let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
 
 	" 禁止 gutentags 自动链接 gtags 数据库
 	let g:gutentags_auto_add_gtags_cscope = 0
@@ -521,6 +521,11 @@ endif
 " YouCompleteMe : 自动补全插件
 "----------------------------------------------------------------------
 Plug 'ycm-core/YouCompleteMe'
+nnoremap <leader>jg :YcmCompleter GoTo<CR>
+nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>jh :YcmCompleter GoToInclude<CR>
+nnoremap <leader>jr :YcmCompleter GoToReferences<CR>
 
 
 "----------------------------------------------------------------------
