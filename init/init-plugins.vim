@@ -527,6 +527,19 @@ nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>jh :YcmCompleter GoToInclude<CR>
 nnoremap <leader>jr :YcmCompleter GoToReferences<CR>
 
+"--------------------------------------------------------------------
+" Vim Termianl 插件
+"-------------------------------------------------------------------
+Plug 'skywind3000/vim-terminal-help'
+" ALT + =: toggle terminal below.
+" ALT + SHIFT + h: move to the window on the left.
+" ALT + SHIFT + l: move to the window on the right.
+" ALT + SHIFT + j: move to the window below.
+" ALT + SHIFT + k: move to the window above.
+" ALT + SHIFT + p: move to the previous window.
+" ALT + -: paste register 0 to terminal.
+" ALT + q: switch to terminal normal mode 
+
 
 "----------------------------------------------------------------------
 " 结束插件安装
