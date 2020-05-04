@@ -44,14 +44,15 @@ call plug#begin(get(g:, 'bundle_home', '~/.vim/bundles'))
 " 全文快速移动，<leader><leader>f{char} 即可触发
 Plug 'easymotion/vim-easymotion'
 
-" 文件浏览器，代替 netrw
-Plug 'justinmk/vim-dirvish'
-
 " 表格对齐，使用命令 Tabularize
 Plug 'godlygeek/tabular', { 'on': 'Tabularize' }
 
 " Diff 增强，支持 histogram / patience 等更科学的 diff 算法
 Plug 'chrisbra/vim-diff-enhanced'
+
+"" 文件浏览器，代替 netrw,主要用于直接从命令行编辑目录
+Plug 'justinmk/vim-dirvish'
+Plug 'kristijanhusak/vim-dirvish-git'
 
 
 "----------------------------------------------------------------------
@@ -63,9 +64,9 @@ function! s:setup_dirvish()
 	if &buftype != 'nofile' && &filetype != 'dirvish'
 		return
 	endif
-	if has('nvim')
-		return
-	endif
+"	if has('nvim')
+"		return
+"	endif
 	" 取得光标所在行的文本（当前选中的文件名）
 	let text = getline('.')
 	if ! get(g:, 'dirvish_hide_visible', 0)
@@ -303,20 +304,101 @@ endif
 
 
 "----------------------------------------------------------------------
-" NERDTree
+" 文件浏览器
 "----------------------------------------------------------------------
-if index(g:bundle_group, 'nerdtree') >= 0
-	Plug 'scrooloose/nerdtree', {'on': ['NERDTree', 'NERDTreeFocus', 'NERDTreeToggle', 'NERDTreeCWD', 'NERDTreeFind'] }
-	Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-	let g:NERDTreeMinimalUI = 1
-	let g:NERDTreeDirArrows = 1
-	let g:NERDTreeHijackNetrw = 0
-	noremap <space>nn :NERDTree<cr>
-	noremap <space>no :NERDTreeFocus<cr>
-	noremap <space>nm :NERDTreeMirror<cr>
-	noremap <space>nt :NERDTreeToggle<cr>
+"if index(g:bundle_group, 'nerdtree') >= 0
+"	Plug 'scrooloose/nerdtree', {'on': ['NERDTree', 'NERDTreeFocus', 'NERDTreeToggle', 'NERDTreeCWD', 'NERDTreeFind'] }
+"	Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"	let g:NERDTreeMinimalUI = 1
+"	let g:NERDTreeDirArrows = 1
+"	let g:NERDTreeHijackNetrw = 0
+"	noremap <space>nn :NERDTree<cr>
+"	noremap <space>no :NERDTreeFocus<cr>
+"	noremap <space>nm :NERDTreeMirror<cr>
+"	noremap <space>nt :NERDTreeToggle<cr>
+"endif
+"" defx.nvim 异步文件浏览器
+if has('nvim')
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/defx.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
+Plug 'kristijanhusak/defx-git'
+
+nnoremap dt :Defx `expand('%:p:h')` -search=`expand('%:p')` -toggle -split=vertical -winwidth=50 -direction=botright -columns=git:mark:filename<CR>
+function! s:defx_my_settings() abort
+	  "
+	  " Define mappings
+	  nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
+	  nnoremap <silent><buffer><expr> > defx#do_action('resize',
+		\ defx#get_context().winwidth + 10)
+	  nnoremap <silent><buffer><expr> < defx#do_action('resize',
+		\ defx#get_context().winwidth - 10)
+	  	  nnoremap <silent><buffer><expr> c
+	  \ defx#do_action('copy')
+	  nnoremap <silent><buffer><expr> m
+	  \ defx#do_action('move')
+	  nnoremap <silent><buffer><expr> p
+	  \ defx#do_action('paste')
+	  nnoremap <silent><buffer><expr> l
+	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr> E
+	  \ defx#do_action('open', 'vsplit')
+	  nnoremap <silent><buffer><expr> P
+	  \ defx#do_action('open', 'pedit')
+	  nnoremap <silent><buffer><expr> o
+	  \ defx#do_action('open_or_close_tree')
+	  nnoremap <silent><buffer><expr> K
+	  \ defx#do_action('new_directory')
+	  nnoremap <silent><buffer><expr> N
+	  \ defx#do_action('new_file')
+	  nnoremap <silent><buffer><expr> M
+	  \ defx#do_action('new_multiple_files')
+	  nnoremap <silent><buffer><expr> C
+	  \ defx#do_action('toggle_columns',
+	  \                'mark:indent:icon:filename:type:size:time')
+	  nnoremap <silent><buffer><expr> S
+	  \ defx#do_action('toggle_sort', 'time')
+	  nnoremap <silent><buffer><expr> RM
+	  \ defx#do_action('remove')
+	  nnoremap <silent><buffer><expr> rn
+	  \ defx#do_action('rename')
+	  nnoremap <silent><buffer><expr> !
+	  \ defx#do_action('execute_command')
+	  nnoremap <silent><buffer><expr> x
+	  \ defx#do_action('execute_system')
+	  nnoremap <silent><buffer><expr> yy
+	  \ defx#do_action('yank_path')
+	  nnoremap <silent><buffer><expr> .
+	  \ defx#do_action('toggle_ignored_files')
+	  nnoremap <silent><buffer><expr> ;
+	  \ defx#do_action('repeat')
+	  nnoremap <silent><buffer><expr> h
+	  \ defx#do_action('cd', ['..'])
+	  nnoremap <silent><buffer><expr> ~
+	  \ defx#do_action('cd')
+	  nnoremap <silent><buffer><expr> q
+	  \ defx#do_action('quit')
+	  nnoremap <silent><buffer><expr> <Space>
+	  \ defx#do_action('toggle_select') . 'j'
+	  nnoremap <silent><buffer><expr> *
+	  \ defx#do_action('toggle_select_all')
+	  nnoremap <silent><buffer><expr> j
+	  \ line('.') == line('$') ? 'gg' : 'j'
+	  nnoremap <silent><buffer><expr> k
+	  \ line('.') == 1 ? 'G' : 'k'
+	  nnoremap <silent><buffer><expr> rd
+	  \ defx#do_action('redraw')
+	  nnoremap <silent><buffer><expr> <C-g>
+	  \ defx#do_action('print')
+	  nnoremap <silent><buffer><expr> cd
+	  \ defx#do_action('change_vim_cwd')
+endfunction
+
+autocmd FileType defx call s:defx_my_settings()
 
 "----------------------------------------------------------------------
 " LanguageTool 语法检查
