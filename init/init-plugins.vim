@@ -300,6 +300,7 @@ if index(g:bundle_group, 'airline') >= 0
 	let g:airline#extensions#fugitiveline#enabled = 0
 	let g:airline#extensions#csv#enabled = 0
 	let g:airline#extensions#vimagit#enabled = 0
+	let g:airline#extensions#coc#enabled = 1
 endif
 
 
@@ -328,11 +329,11 @@ endif
 
 Plug 'kristijanhusak/defx-git'
 
-nnoremap dt :Defx `expand('%:p:h')` -search=`expand('%:p')` -toggle -split=vertical -winwidth=50 -direction=botright -columns=git:mark:filename<CR>
+nnoremap dt :Defx `expand('%:p:h')` -search=`expand('%:p')` -toggle -split=vertical -winwidth=40 -direction=botright -columns=git:mark:filename<CR>
 function! s:defx_my_settings() abort
 	  "
 	  " Define mappings
-	  nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
+	  nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
 	  nnoremap <silent><buffer><expr> > defx#do_action('resize',
 		\ defx#get_context().winwidth + 10)
 	  nnoremap <silent><buffer><expr> < defx#do_action('resize',
@@ -600,14 +601,34 @@ if index(g:bundle_group, 'leaderf') >= 0
 endif
 
 "----------------------------------------------------------------------
+" Coc.nvim
+"----------------------------------------------------------------------
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'SirVer/ultisnips'
+"keymap
+nnoremap <leader>j1 <Plug>(coc-definition)
+nnoremap <leader>j2 <Plug>(coc-declaration)
+nnoremap <leader>j3 <Plug>(coc-implementation)
+nnoremap <leader>j4 <Plug>(coc-type-definition)
+nnoremap <leader>j5 <Plug>(coc-references)
+nnoremap <leader>fb <Plug>(coc-format) 
+nnoremap <leader>rn   <Plug>(coc-rename) 
+nnoremap <leader>rf   <Plug>(coc-refactor)
+"由于异步启动Coc,服务启动时调用函数需要使用autocmd命令
+" 启动服务时检查或安装插件
+autocmd User CocNvimInit call coc#add_extension('coc-marketplace','coc-lists','coc-tag','coc-ultisnips','coc-json','coc-cmake','coc-clangd')
+"call coc#add_extension('coc-marketplace','coc-list','coc-tag','coc-ultisnips','coc-json','coc-cmake','coc-clangd')
+let g:coc_config_home = s:path("plugin")
+
+"----------------------------------------------------------------------
 " YouCompleteMe : 自动补全插件
 "----------------------------------------------------------------------
-Plug 'ycm-core/YouCompleteMe'
-nnoremap <leader>jg :YcmCompleter GoTo<CR>
-nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>jh :YcmCompleter GoToInclude<CR>
-nnoremap <leader>jr :YcmCompleter GoToReferences<CR>
+"Plug 'ycm-core/YouCompleteMe'
+"nnoremap <leader>jg :YcmCompleter GoTo<CR>
+"nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>jh :YcmCompleter GoToInclude<CR>
+"nnoremap <leader>jr :YcmCompleter GoToReferences<CR>
 
 "--------------------------------------------------------------------
 " Vim Termianl 插件
@@ -633,84 +654,84 @@ call plug#end()
 "----------------------------------------------------------------------
 " YouCompleteMe 默认设置：YCM 需要你另外手动编译安装
 "----------------------------------------------------------------------
-
-" 禁用预览功能：扰乱视听
-let g:ycm_add_preview_to_completeopt = 0
-
-" 禁用诊断功能：我们用前面更好用的 ALE 代替
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_server_log_level = 'info'
-let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_strings=1
-let g:ycm_key_invoke_completion = '<c-z>'
-set completeopt=menu,menuone,noselect
-
-" noremap <c-z> <NOP>
-
-" 两个字符自动触发语义补全
-let g:ycm_semantic_triggers =  {
-			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-			\ 'cs,lua,javascript': ['re!\w{2}'],
-			\ }
-
-
-"----------------------------------------------------------------------
-" Ycm 白名单（非名单内文件不启用 YCM），避免打开个 1MB 的 txt 分析半天
-"----------------------------------------------------------------------
-let g:ycm_filetype_whitelist = { 
-			\ "c":1,
-			\ "cpp":1, 
-			\ "objc":1,
-			\ "objcpp":1,
-			\ "python":1,
-			\ "java":1,
-			\ "javascript":1,
-			\ "coffee":1,
-			\ "vim":1, 
-			\ "go":1,
-			\ "cs":1,
-			\ "lua":1,
-			\ "perl":1,
-			\ "perl6":1,
-			\ "php":1,
-			\ "ruby":1,
-			\ "rust":1,
-			\ "erlang":1,
-			\ "asm":1,
-			\ "nasm":1,
-			\ "masm":1,
-			\ "tasm":1,
-			\ "asm68k":1,
-			\ "asmh8300":1,
-			\ "asciidoc":1,
-			\ "basic":1,
-			\ "vb":1,
-			\ "make":1,
-			\ "cmake":1,
-			\ "html":1,
-			\ "css":1,
-			\ "less":1,
-			\ "json":1,
-			\ "cson":1,
-			\ "typedscript":1,
-			\ "haskell":1,
-			\ "lhaskell":1,
-			\ "lisp":1,
-			\ "scheme":1,
-			\ "sdl":1,
-			\ "sh":1,
-			\ "zsh":1,
-			\ "bash":1,
-			\ "man":1,
-			\ "markdown":1,
-			\ "matlab":1,
-			\ "maxima":1,
-			\ "dosini":1,
-			\ "conf":1,
-			\ "config":1,
-			\ "zimbu":1,
-			\ "ps1":1,
-			\ }
-
+"
+"" 禁用预览功能：扰乱视听
+"let g:ycm_add_preview_to_completeopt = 0
+"
+"" 禁用诊断功能：我们用前面更好用的 ALE 代替
+"let g:ycm_show_diagnostics_ui = 0
+"let g:ycm_server_log_level = 'info'
+"let g:ycm_min_num_identifier_candidate_chars = 2
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_complete_in_strings=1
+"let g:ycm_key_invoke_completion = '<c-z>'
+"set completeopt=menu,menuone,noselect
+"
+"" noremap <c-z> <NOP>
+"
+"" 两个字符自动触发语义补全
+"let g:ycm_semantic_triggers =  {
+"			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+"			\ 'cs,lua,javascript': ['re!\w{2}'],
+"			\ }
+"
+"
+""----------------------------------------------------------------------
+"" Ycm 白名单（非名单内文件不启用 YCM），避免打开个 1MB 的 txt 分析半天
+""----------------------------------------------------------------------
+"let g:ycm_filetype_whitelist = { 
+"			\ "c":1,
+"			\ "cpp":1, 
+"			\ "objc":1,
+"			\ "objcpp":1,
+"			\ "python":1,
+"			\ "java":1,
+"			\ "javascript":1,
+"			\ "coffee":1,
+"			\ "vim":1, 
+"			\ "go":1,
+"			\ "cs":1,
+"			\ "lua":1,
+"			\ "perl":1,
+"			\ "perl6":1,
+"			\ "php":1,
+"			\ "ruby":1,
+"			\ "rust":1,
+"			\ "erlang":1,
+"			\ "asm":1,
+"			\ "nasm":1,
+"			\ "masm":1,
+"			\ "tasm":1,
+"			\ "asm68k":1,
+"			\ "asmh8300":1,
+"			\ "asciidoc":1,
+"			\ "basic":1,
+"			\ "vb":1,
+"			\ "make":1,
+"			\ "cmake":1,
+"			\ "html":1,
+"			\ "css":1,
+"			\ "less":1,
+"			\ "json":1,
+"			\ "cson":1,
+"			\ "typedscript":1,
+"			\ "haskell":1,
+"			\ "lhaskell":1,
+"			\ "lisp":1,
+"			\ "scheme":1,
+"			\ "sdl":1,
+"			\ "sh":1,
+"			\ "zsh":1,
+"			\ "bash":1,
+"			\ "man":1,
+"			\ "markdown":1,
+"			\ "matlab":1,
+"			\ "maxima":1,
+"			\ "dosini":1,
+"			\ "conf":1,
+"			\ "config":1,
+"			\ "zimbu":1,
+"			\ "ps1":1,
+"			\ }
+"
 
